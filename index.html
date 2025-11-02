@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container container_main">
+        <header class="row">
+            <div class="col-2 header_left">
+            </div>
+            <div class="col header_right">
+                <div class="header-title">Финансовый отдел Администрации муниципального образования Домбаровский район Оренбургской области</div>
+                <div class="tel"><a href="tel:+73536721267">+7 (35367) 2-12-67</a></div>
+            </div>
+        </header>
+        
+        <main class="row align-items-start">
+            <div class="side_block col-lg-3">
+                lg3
+            </div>
+            
+            <div class="main_wrapper col-lg-9 row">
+                <div class="col-lg-12 main_content">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <link rel="stylesheet" href="/assets/files/bord/css/bord.css?v=3.4">
+                    
+                    <script src="/assets/files/bord/js/chart.js"></script>
+                    <script src="/assets/files/bord/js/xlsx.full.min-2.js"></script>
+                    <script src="/assets/files/bord/js/xlsx.min.js"></script>
+                    <script src="/assets/files/bord/js/bord.js?v=4.4"></script>
+                    
+                    <!-- Вкладки -->
+                    <div class="tabs">
+                        <button class="tab-btn income active" onclick="changeTab('income')">ДОХОДЫ</button>
+                        <button class="tab-btn expenses" onclick="changeTab('expenses')">РАСХОДЫ</button>
+                        <button class="tab-btn projects" onclick="changeTab('projects')">Инициативные проекты</button>
+                        <button class="tab-btn budget" onclick="changeTab('budget')">Муниципальные программы</button>
+                        <button class="tab-btn schkola" onclick="changeTab('schkola')">Национальные проекты</button>
+                    </div>
+                    <!-- Вкладка ДОХОДЫ -->
+                    <div id="tab-income" class="tab-content active">
+                        <div class="year-selector">
+                            <button class="year-btn" data-year="2024" onclick="changeYear(2024)">2024 факт</button>
+                            <button class="year-btn active" data-year="2025" onclick="changeYear(2025)">2025 план</button>
+                            <button class="year-btn" data-year="2026" onclick="changeYear(2026)">2026 план</button>
+                            <button class="year-btn" data-year="2027" onclick="changeYear(2027)">2027 план</button>
+                        </div>
+                        <div class="controls">
+                            <button onclick="changeChartType('bar', 'income')">Столбчатая</button>
+                            <button onclick="changeChartType('line', 'income')">Линейная</button>
+                            <button onclick="changeChartType('doughnut', 'income')">Круговая</button>
+                        </div>
+                        <div class="export-buttons-small">
+                            <button class="btn-small" onclick="exportToCSV('income')">Экспорт в CSV</button>
+                            <button class="btn-small" onclick="exportToXLS('income')">Экспорт в XLSX</button>
+                            <button class="btn-small" onclick="printReport('income')">Печать</button>
+                        </div>
+                        <div class="total-income" id="totalIncome"></div>
+                            <div class="chart-container">
+                                <canvas id="financeChart"></canvas>
+                                <div id="chartLabels" class="chart-labels"></div>
+                        </div>
+                        <div class="projects-section">
+                            <p>Выберите для отображения в диаграмме:</p>
+                            <div class="projects-grid" id="projectsGrid"></div>
+                        </div>
+                        <table class="data-table">
+                            <thead>
+                                <tr><th>Год</th><th>Доходы</th><th>Выбранные проекты</th></tr>
+                            </thead>
+                            <tbody id="dataTableBody"></tbody>
+                        </table>
+                    </div>
+                    <!-- Вкладка РАСХОДЫ -->
+                    <div id="tab-expenses" class="tab-content">
+                        <div class="year-selector">
+                            <button class="year-btn" data-year="2024" onclick="changeExpensesYear(2024)">2024 факт</button>
+                            <button class="year-btn active" data-year="2025" onclick="changeExpensesYear(2025)">2025 план</button>
+                            <button class="year-btn" data-year="2026" onclick="changeExpensesYear(2026)">2026 план</button>
+                            <button class="year-btn" data-year="2027" onclick="changeExpensesYear(2027)">2027 план</button>
+                        </div>
+                        <div class="controls">
+                            <button onclick="changeChartType('bar', 'expenses')">Столбчатая</button>
+                            <button onclick="changeChartType('line', 'expenses')">Линейная</button>
+                            <button onclick="changeChartType('doughnut', 'expenses')">Круговая</button>
+                        </div>
+                        <div class="export-buttons-small">
+                            <button class="btn-small" onclick="exportToCSV('expenses')">Экспорт в CSV</button>
+                            <button class="btn-small" onclick="exportToXLS('expenses')">Экспорт в XLSX</button>
+                            <button class="btn-small" onclick="printReport('expenses')">Печать</button>
+                        </div>
+                        <div class="total-income" id="totalExpenses"></div>
+                            <div class="chart-container">
+                            <canvas id="expensesChart"></canvas>
+                            <div id="expensesChartLabels" class="chart-labels"></div>
+                        </div>
+                        <div class="projects-section">
+                            <p>Выберите для отображения в диаграмме:</p>
+                            <div class="projects-grid" id="expensesGrid"></div>
+                        </div>
+                        <table class="data-table">
+                            <thead>
+                                <tr><th>Год</th><th>Расходы</th><th>Выбранные статьи</th></tr>
+                            </thead>
+                            <tbody id="expensesTableBody"></tbody>
+                        </table>
+                    </div>
+                    <!-- Вкладка ПРОЕКТЫ -->
+                    <div id="tab-projects" class="tab-content">
+                        <h2>Инициативные проекты Домбаровского района</h2>
+                        <div class="chart-container"><canvas id="projectsChart"></canvas></div>
+                        <div class="projects-info">
+                            <h3>Детальная информация по проектам</h3>
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Наименование проекта</th><th>Год реализации</th>
+                                            <th>Стоимость проекта (тыс. руб.)</th>
+                                            <th>Областной бюджет</th>
+                                            <th>Местный бюджет</th>
+                                            <th>Инициативные платежи и спонсоры</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="projectsTableBody"></tbody>
+                                </table>
+                        </div>
+                        <div class="projects-stats">
+                            <h3>Статистика по годам</h3>
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Год</th>
+                                            <th>Количество проектов</th>
+                                            <th>Общий бюджет (тыс. руб.)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="projectsStatsBody"></tbody>
+                                </table>
+                        </div>
+                    </div>
+                    <!-- Вкладка МУНИЦИПАЛЬНЫЕ ПРОГРАММЫ -->
+                    <div id="tab-budget" class="tab-content">
+                        <div class="budget-content">
+                            <h2>Муниципальные программы Домбаровского района</h2>
+                                <div class="controls">
+                                    <button class="btn-small" onclick="exportProgramToCSV()">Экспорт в CSV</button>
+                                    <button class="btn-small" onclick="exportProgramToXLS()">Экспорт в XLSX</button>
+                                    <button class="btn-small" onclick="printProgramReport()">Печать</button>
+                                </div>
+                            <div class="program-table-container">
+                                <table class="program-table">
+                                    <thead>
+                                        <tr><th rowspan="2">Наименование программы</th><th colspan="4">Бюджет (тыс. руб.)</th></tr>
+                                        <tr><th>2024</th><th>2025</th><th>2026</th><th>2027</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Развитие образования в муниципальном образовании Домбаровский район Оренбургской области</td>
+                                            <td>778014.50</td>
+                                            <td>834044.70</td>
+                                            <td>783548.70</td>
+                                            <td>945910.90</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Молодое поколение муниципального образования Домбаровский район Оренбургской области</td>
+                                            <td>417.40</td>
+                                            <td>426.20</td>
+                                            <td>0.00</td>
+                                            <td>0.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Стимулирование развития жилищного строительства на территории Домбаровского района Оренбургской области</td>
+                                            <td>10827.80</td>
+                                            <td>6220.80</td>
+                                            <td>6093.80</td>
+                                            <td>6093.80</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Развитие муниципальной службы в муниципальном образовании Домбаровский район Оренбургской области</td>
+                                            <td>35061.30</td>
+                                            <td>46157.80</td>
+                                            <td>36126.50</td>
+                                            <td>36011.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Экономическое развитие муниципального образования Домбаровский район Оренбургской области</td>
+                                            <td>8968.60</td>
+                                            <td>9692.20</td>
+                                            <td>9600.00</td>
+                                            <td>8900.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Управление муниципальными финансами Домбаровского района Оренбургской области</td>
+                                            <td>131976.00</td>
+                                            <td>161680.40</td>
+                                            <td>100875.70</td>
+                                            <td>96521.70</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Управление муниципальным имуществом муниципального образования Домбаровский район Оренбургской области</td>
+                                            <td>31160.20</td>
+                                            <td>26660.00</td>
+                                            <td>28211.20</td>
+                                            <td>28211.20</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Защита населения и территории муниципального образования Домбаровский район Оренбургской области от чрезвычайных ситуаций, обеспечение пожарной безопасности и безопасности людей на водных объектах</td>
+                                            <td>5898.60</td>
+                                            <td>7206.60</td>
+                                            <td>6957.40</td>
+                                            <td>6957.40</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Профилактика терроризма и противодействие экстремистской деятельности на территории муниципального образования Домбаровский район Оренбургской области</td>
+                                            <td>21.00</td>
+                                            <td>36.00</td>
+                                            <td>00.00</td>
+                                            <td>00.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Развитие сельского хозяйства и регулирование рынков сельскохозяйственной продукции, сырья и продовольствия Домбаровского района Оренбургской области</td>
+                                            <td>6238.50</td>
+                                            <td>8523.90</td>
+                                            <td>8287.90</td>
+                                            <td>8662.90</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Комплексные меры противодействия злоупотреблению наркотиками и их незаконному обороту в Домбаровском районе среди молодого поколения</td>
+                                            <td>143.90</td>
+                                            <td>140.40</td>
+                                            <td>0.00</td>
+                                            <td>0.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Профилактика правонарушений в муниципальном образовании Домбаровский район Оренбургской области</td>
+                                            <td>21.50</td>
+                                            <td>21.50</td>
+                                            <td>0.00</td>
+                                            <td>0.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Культура Домбаровского района Оренбургской области</td>
+                                            <td>35557.60</td>
+                                            <td>42498.60</td>
+                                            <td>31149.20</td>
+                                            <td>30800.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Муниципальная программа «Энергосбережение и повышение энергетической эффективности в Домбаровском районе Оренбургской области»</td>
+                                            <td>1.00</td>
+                                            <td>7.00</td>
+                                            <td>0.00</td>
+                                            <td>0.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Укрепление общественного здоровья жителей муниципального образования Домбаровский район Оренбургской области</td>
+                                            <td>8.00</td>
+                                            <td>8.40</td>
+                                            <td>0.00</td>
+                                            <td>0.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Противодействие коррупции в муниципальном образовании Домбаровский район Оренбургской области</td>
+                                            <td>22.00</td>
+                                            <td>20.00</td>
+                                            <td>0.00</td>
+                                            <td>0.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Повышение безопасности дорожного движения в Домбаровском районе Оренбургской области</td>
+                                            <td>25.50</td>
+                                            <td>84.00</td>
+                                            <td>84.00</td>
+                                            <td>84.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Развитие физической культуры и спорта в муниципальном образовании Домбаровский район Оренбургской области</td>
+                                            <td>1173.80</td>
+                                            <td>1350.00</td>
+                                            <td>10859.20</td>
+                                            <td>758.20</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Охрана окружающей среды Домбаровского района Оренбургской области</td>
+                                            <td>780.00</td>
+                                            <td>780.00</td>
+                                            <td>780.00</td>
+                                            <td>780.00</td>
+                                        </tr>
+                                        <tr class="total-row">
+                                            <td><strong>ИТОГО РАСХОДОВ</strong></td>
+                                            <td><strong id="total-2024">0.00</strong></td>
+                                            <td><strong id="total-2025">0.00</strong></td>
+                                            <td><strong id="total-2026">0.00</strong></td>
+                                            <td><strong id="total-2027">0.00</strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Вкладки НАЦИОНАЛЬНЫЕ ПРОЕКТЫ -->
+                    <div id="tab-schkola" class="tab-content">
+                        <div class="schkola-conten">
+                            <h2>Национальные проекты Домбаровского района</h2>
+                            <div class="controls">
+                                <button class="btn-small" onclick="exportNationalToCSV()">Экспорт в CSV</button>
+                                <button class="btn-small" onclick="exportNationalToXLS()">Экспорт в XLSX</button>
+                                <button class="btn-small" onclick="printNationalReport()">Печать</button>
+                            </div>
+                        <div class="program-table-container">
+                            <table class="program-table program-table2">
+                                <thead>
+                                    <tr><th rowspan="2">Наименование национального проекта</th><th colspan="4">Бюджет (тыс. руб.)</th></tr>
+                                    <tr>
+                                        <th>2024</th>
+                                        <th>2025</th>
+                                        <th>2026</th>
+                                        <th>2027</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>НП «Образование», Региональный проект «Успех каждого ребенка»</td>
+                                        <td>6200.00</td>
+                                        <td>0.00</td>
+                                        <td>0.00</td>
+                                        <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>НП «Образование» Региональный проект «Патриотическое воспитание граждан Российской Федерации»</td>
+                                        <td>2189.4</td>
+                                        <td>0.00</td>
+                                        <td>0.00</td>
+                                        <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>НП «Молодежь и дети» «Региональный проект «Педагоги и наставники»</td>
+                                        <td>0.00</td>
+                                        <td>40467.40</td>
+                                        <td>40483.60</td>
+                                        <td>40483.60</td>
+                                    </tr>
+                                    <tr>
+                                        <td>НП «Молодежь и дети» Региональный проект «Все лучшее детям»</td>
+                                        <td>0.00</td>
+                                        <td>0.00</td>
+                                        <td>0.00</td>
+                                        <td>161929.80</td>
+                                    </tr>
+                                    <tr class="total-row">
+                                        <td><strong>ИТОГО РАСХОДОВ</strong></td>
+                                        <td><strong id="national-total-2024">0.00</strong></td>
+                                        <td><strong id="national-total-2025">0.00</strong></td>
+                                        <td><strong id="national-total-2026">0.00</strong></td>
+                                        <td><strong id="national-total-2027">0.00</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        </div>
+                    </div>
+                </div>                
+            </div>
+        </main>
+        
+    </div>
+</body>
+</html>
