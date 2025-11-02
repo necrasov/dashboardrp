@@ -1,0 +1,659 @@
+
+h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 30px;
+}
+/* Стили для вкладок */
+.tabs {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+/* На маленьких экранах уменьшаем зазор */
+@media (max-width: 560px) {
+  .tabs {
+    gap: 1px;
+    justify-content: flex-start;
+    padding: 0 10px;
+  }
+  .tab-button {
+    flex: 1 1 45%;
+    text-align: center;
+  }
+}
+.tab-btn {
+  background: #e9ecef;
+  color: #495057;
+  font-weight: 600;
+}
+.tab-btn:hover {
+  background: #dee2e6;
+  transform: translateY(-2px);
+}
+button {
+  padding: 10px 10px;
+  border: none;
+  border-radius: 10px;
+  background: #007bff;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 14px;
+}
+button:hover {
+  background: #0056b3;
+  transform: translateY(-2px);
+}
+button.active {
+  background: #0056b3;
+  border: none;
+}
+button:focus {
+    outline: none;
+}
+.tab-btn.active {
+  background: #007bff;
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
+.tab-btn.income.active {
+  background: #28a745;
+  box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+}
+.tab-btn.expenses.active {
+  background: #dc3545;
+  box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+}
+.tab-btn.projects.active {
+  background: #6f42c1;
+  box-shadow: 0 4px 8px rgba(111, 66, 193, 0.3);
+}
+.tab-btn.budget.active {
+  background: #fd7e14;
+  box-shadow: 0 4px 8px rgba(253, 126, 20, 0.3);
+}
+.tab-btn.schkola.active {
+  background: #ad0855;
+  box-shadow: 0 4px 8px rgba(253, 126, 20, 0.3);
+}
+/* Стили для контейнера диаграммы */
+.chart-container {
+  position: relative;
+  height: 500px;
+  width: 100%;
+  margin: 20px 0;
+  top: 12px;
+}
+.center-label {
+  position: absolute;
+  text-align: center;
+  z-index: 10;
+  font-family: Arial, sans-serif;
+  font-size: 18px;
+  font-weight: bold;
+  color: #000;
+  text-shadow: 1px 1px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff;
+}
+canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 30px;
+}
+.data-table th,
+.data-table td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: center;
+}
+.data-table th {
+  background-color: #f8f9fa;
+  font-weight: bold;
+}
+.data-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+.projects-section {
+  margin: 30px 0;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+.projects-grid {
+  display: grid;
+  /*grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));*/
+  gap: 15px;
+  margin-top: 15px;
+}
+.project-card {
+  padding: 15px;
+  background: white;
+  border-radius: 8px;
+  border: 2px solid #ddd;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-align: center;
+}
+.project-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.project-card.selected {
+  border-color: #007bff;
+  background: #e3f2fd;
+}
+.project-card.income {
+  border-left: 4px solid #4CAF50;
+}
+.project-name {
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #333;
+}
+.project-amount {
+  font-size: 14px;
+  color: #666;
+  font-weight: bold;
+}
+.project-type {
+  font-size: 12px;
+  color: #888;
+  margin-top: 5px;
+}
+.year-selector {
+  margin-bottom: 20px;
+  text-align: center;
+}
+.year-btn {
+  padding: 8px 16px;
+  margin: 0 5px;
+  background: #007bff;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.year-btn.active {
+  background: #155ba7;
+  color: white;
+  border-color: #155ba7;
+}
+.year-btn:hover {
+  border-color: #007bff;
+}
+.total-income {
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: #2E7D32;
+  margin: 20px 0;
+  padding: 15px;
+  background: #E8F5E9;
+  border-radius: 8px;
+}
+.chart-labels {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+/* Стили для выносных меток */
+.label-line {
+  position: absolute;
+  height: 1px;
+  background-color: #999;
+  transform-origin: 0 0;
+  z-index: 5;
+}
+.label-text {
+  position: absolute;
+  background: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  color: #333;
+  z-index: 20;
+  min-width: 100px;
+  line-height: 1.4;
+  pointer-events: none;
+}
+.label-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+.label-value {
+  font-size: 14px;
+  color: #333;
+  font-weight: bold;
+}
+.label-percentage {
+  font-size: 11px;
+  color: #666;
+  margin-top: 2px;
+}
+.label-text:hover {
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+.label-text div:first-child {
+  font-weight: 600;
+  color: #2c3e50;
+}
+.label-text div:last-child {
+  color: #7f8c8d;
+  font-size: 0.9em;
+}
+#chartLabels,
+#expensesChartLabels {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 100;
+}
+/* Стиль для неактивного контента */
+.tab-content {
+  display: none;
+}
+.tab-content.active {
+  display: block;
+}
+.doughnut-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin: 5px 15px;
+}
+.legend-color {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.controls button:nth-child(1) {
+  background: #007BFF;
+}
+.controls button:nth-child(1):hover {
+  background: #0056B3;
+}
+.controls button:nth-child(2) {
+  background: #28A745;
+}
+.controls button:nth-child(2):hover {
+  background: #1E7E34;
+}
+.controls button:nth-child(3) {
+  background: #6F42C1;
+}
+.controls button:nth-child(3):hover {
+  background: #5A2D91;
+}
+/* --- кнопок экспорта/печати --- */
+.export-buttons-small {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin: 15px 0;
+  flex-wrap: wrap;
+}
+/* Стиль для маленькой кнопки */
+.btn-small {
+  padding: 4px 8px;
+  font-size: 11px; 
+  background: #17a2b8;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+/* Hover эффект для маленькой кнопки */
+.btn-small:hover {
+  background: #138496;
+}
+/* Активное состояние кнопки */
+.btn-small:active {
+  transform: scale(0.98);
+}
+.export-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+.export-buttons button {
+  background: #17a2b8;
+}
+.export-buttons button:hover {
+  background: #138496;
+}
+/* стили для вложенной структуры */
+.project-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+.project-info {
+  flex: 1;
+}
+.toggle-subprojects-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 5px 10px;
+  margin-left: 10px;
+  color: #666;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+.toggle-subprojects-btn:hover {
+  color: #333;
+  background-color: #f0f0f0;
+  border-radius: 3px;
+}
+/* Класс для развернутого состояния */
+.toggle-subprojects-btn.expanded {
+  transform: rotate(90deg);
+}
+.has-subprojects {
+  border-left-width: 4px !important;
+}
+.subprojects-container {
+  margin-top: 10px;
+  margin-left: 20px;
+  border-left: 2px dashed #ddd;
+  padding-left: 15px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+.subproject-card {
+  padding: 12px 15px;
+  margin: 8px 0;
+  border-radius: 6px;
+  border-left: 3px solid;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  background-color: #fafafa;
+  border: 1px solid #eee;
+}
+.subproject-card:hover {
+  background-color: #f0f0f0 !important;
+  transform: translateX(5px);
+}
+.subproject-card.selected {
+  font-weight: bold;
+  background-color: #e3f2fd;
+  border-color: #2196F3 !important;
+}
+.project-card.has-subprojects.selected {
+  font-weight: bold;
+  background-color: #e8f5e9;
+}
+/* Стиль для отображения количества выбранных подпроектов */
+.project-header .selection-count {
+  font-size: 0.85em;
+  color: #666;
+  margin-left: 8px;
+  font-weight: normal;
+}
+.no-subprojects {
+  display: inline-block;
+  width: 20px;
+  text-align: center;
+  color: #999;
+  margin-right: 10px;
+}
+ /* Стили для вкладки инициативных проектов */
+#tab-projects h2 {
+  text-align: center;
+  color: #6f42c1;
+  margin-bottom: 30px;
+}
+#tab-projects h3 {
+  color: #495057;
+  margin: 30px 0 20px 0;
+  border-bottom: 2px solid #6f42c1;
+  padding-bottom: 10px;
+}
+.projects-info, .projects-stats {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+/* Стили для таблицы инициативных проектов */
+.project-main-row {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  cursor: pointer;
+}
+.project-main-row:hover {
+  background-color: #e9ecef;
+}
+.project-sub-row {
+  background-color: #fafafa;
+}
+.project-sub-row:hover {
+  background-color: #f0f0f0;
+}
+.project-total-row {
+  background-color: #e8f5e9;
+  font-weight: bold;
+}
+.total-row {
+  white-space: nowrap;
+}
+.subproject-cell {
+  padding-left: 40px !important;
+}
+.subproject-indent {
+  color: #666;
+  font-style: italic;
+}
+.total-cell {
+  text-align: right !important;
+  padding-right: 20px;
+}
+#tab-projects .controls {
+  margin-bottom: 20px;
+}
+#tab-projects .controls button {
+  background: #6f42c1;
+}
+#tab-projects .controls button:hover {
+  background: #5a2d91;
+}
+/* Стили для вкладки муниципальной программы */
+.schkola-content {
+  padding: 20px;
+}
+.schkola-content h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 25px;
+  border-bottom: 2px solid #ad0855;
+  padding-bottom: 15px;
+}
+
+.budget-content {
+  padding: 20px;
+}
+.budget-content h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 25px;
+  border-bottom: 2px solid #fd7e14;
+  padding-bottom: 15px;
+}
+
+.program-table-container {
+  overflow-x: auto;
+  margin: 20px 0;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  max-width: 100%;
+}
+.program-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.program-table th {
+  background-color: #fd7e14;
+  padding: 15px 12px;
+  text-align: center;
+  font-weight: 600;
+  border: 1px solid #e0e0e0;
+}
+.program-table2 th {
+  background-color: #ad0855;
+  color: #fff;
+}
+.program-table td {
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  text-align: left;
+}
+.program-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+.program-table tr:hover {
+  background-color: #f1f1f1;
+}
+.program-table .total-row {
+  background-color: #e8f5e9;
+  font-weight: bold;
+}
+.program-table .total-row td {
+  border-top: 2px solid #4caf50;
+}
+.program-chart-container {
+  height: 400px;
+  margin-top: 40px;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+.program-details-row {
+  background-color: #f9f9f9;
+  display: table-row;
+}
+.program-details {
+  padding: 15px;
+  background: white;
+  border-radius: 5px;
+  border-left: 4px solid #007bff;
+  margin: 10px 0;
+}
+
+.program-details h4 {
+  color: #2c3e50;
+  margin-top: 15px;
+  margin-bottom: 8px;
+}
+
+.program-details h4:first-child {
+  margin-top: 0;
+}
+
+.program-details ul {
+  padding-left: 20px;
+  margin-bottom: 15px;
+}
+
+.program-details li {
+  margin-bottom: 5px;
+  line-height: 1.5;
+}
+
+.toggle-icon {
+  display: inline-block;
+  transition: transform 0.3s ease;
+  font-size: 12px;
+}
+.toggle-icon.expanded {
+  transform: rotate(90deg);
+}
+/* Адаптивность таблицы */
+@media (max-width: 768px) {
+  .program-table-container {
+  overflow-x: auto;
+  }
+  .program-table {
+  min-width: 600px;
+  }
+  .program-details {
+  padding: 10px;
+  }
+}
+ul.custom-check-list {
+  list-style: none;
+  padding-left: 0;
+}
+ul.custom-check-list li:before  {
+  content: '✓';
+  border-radius: 3px 3px 3px 3px;
+  list-style: disc inside none;
+  padding: 10px;
+}
+/* Стили для вкладки национальных проектов */
+#tab-schkola .budget-content {
+  padding: 20px;
+}
+#tab-schkola h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 25px;
+  border-bottom: 2px solid #ad0855;
+  padding-bottom: 15px;
+}
+#tab-schkola .program-table th {
+  background-color: #ad0855 !important;
+}
+#tab-schkola .program-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+#tab-schkola .program-table tr:hover {
+  background-color: #f1f1f1;
+}
+#tab-schkola .program-table .total-row {
+  background-color: #e8f5e9;
+  font-weight: bold;
+}
+#tab-schkola .program-table .total-row td {
+  border-top: 2px solid #4caf50;
+}
